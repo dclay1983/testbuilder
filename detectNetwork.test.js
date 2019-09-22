@@ -196,5 +196,19 @@ describe('Discover', function() {
 describe('Maestro', function() {
   // Write full test coverage for the Maestro card
   // Maestro always has a prefix of 5018, 5020, 5038, or 6304, and a length of 12-19.
-});
+    var assert = chai.assert;
+    var prefixes = [5018, 5020, 5038, 6304]
 
+    prefixes.forEach( function(prefix) {
+      for (let len = 12; len <= 19; len++) {
+        let cardNumber = prefix.toString().split("");
+        for (let i = cardNumber.length; i < length; i++) {
+          cardNumber.push(Math.floor(Math.random("") * 10))
+        }
+        cardNumber = cardNumber.join()
+        it(`has a prefix of ${prefix} and a length of ${len}`, function() {
+        assert(detectNetwork('6523456789012294384') === 'Discover');
+       })
+     }
+    });
+});
