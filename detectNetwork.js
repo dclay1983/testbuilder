@@ -22,7 +22,15 @@ var detectNetwork = function(cardNumber) {
   } else if (len === 16 && (prefix >= 51 && prefix <= 55)) {
     // The MasterCard network always starts with 51-55 and is 16, digits long
     return "MasterCard";
-  } else if (false) {
+  } else if ((len ===16 || len === 18 || len === 19) &&
+      (parseInt(cardNumber.slice(0, 4)) === 4903 ||
+      parseInt(cardNumber.slice(0, 4)) === 4905 ||
+      parseInt(cardNumber.slice(0, 4)) === 4911 ||
+      parseInt(cardNumber.slice(0, 4)) === 4936 ||
+      parseInt(cardNumber.slice(0, 4)) === 6333 ||
+      parseInt(cardNumber.slice(0, 4)) === 6759 ||
+      parseInt(cardNumber.slice(0, 6)) === 564182 ||
+      parseInt(cardNumber.slice(0, 6)) === 633110)) {
     // Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
     return "Switch";
   } else if ((len === 13 || len === 16 || len === 19) && (prefix >= 40 && prefix <= 49)) {
