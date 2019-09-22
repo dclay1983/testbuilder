@@ -61,7 +61,7 @@ describe('Diner\'s Club', function() {
 describe('American Express', function() {
   // It can get annoying to keep typing the if/throw, so here is a
   // helper function to throw an error if the input statement isn't true. 
-  var assert = function(isTrue) {
+  let assert = function(isTrue) {
     if(!isTrue) {
       throw new Error('Test failed');
     }
@@ -82,7 +82,7 @@ describe('Visa', function() {
   // Chai provides an assert that acts the same as our previous assert.
   // Search the documentation to figure out how to access it. 
   //   http://chaijs.com/
-  var assert = chai.assert;
+  let assert = chai.assert;
  
 
   it('has a prefix of 4 and a length of 13', function() {
@@ -103,7 +103,7 @@ describe('MasterCard', function() {
   // Expect syntax is one way to do this, but there are others. 
   // If you want to know more, check out the documentation. 
   //   http://chaijs.com/api/bdd/
-  var expect = chai.expect;
+  let expect = chai.expect;
  
   it('has a prefix of 51 and a length of 16', function() {
     expect(detectNetwork('5112345678901234')).to.equal('MasterCard');
@@ -131,7 +131,7 @@ describe('Discover', function() {
   // Tests without a function will be marked as "pending" and not run
   // Implement these tests (and others) and make them pass!
   // Discover always has a prefix of 6011, 644-649, or 65, and a length of 16 or 19.
-  var assert = chai.assert;
+  let assert = chai.assert;
 
   it('has a prefix of 6011 and a length of 16', function() {
     assert(detectNetwork('6011456789012294') === 'Discover');
@@ -219,5 +219,19 @@ describe('Maestro', function() {
     })
     describe('Switch', function() {
       // Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
+      let assert = chai.assert;
+      let prefixes = [4903, 4905, 4911, 4936, 564182, 633110, 6333, 6759];
+      let lengths = [16, 18, 19];
+      prefixes.forEach( function (prefix) {
+        lengths.forEach( function (len) {
+          let cardNumber = prefix.toString().split("");
+          while (cardNumber.length < len) {
+            cardNumber.push(Math.floor(Math.random("") * 10))
+          }
+          cardNumber = cardNumber.join("")
+          it(`has a prefix of ${prefix} and a length of ${len}`, function() {
+            assert(detectNetwork(cardNumber) === 'Switch');
+        })
+      })
     })
 });
