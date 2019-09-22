@@ -28,7 +28,7 @@ var detectNetwork = function(cardNumber) {
   } else {
     if ((len === 16 || len === 19) && (prefix === 60 || prefix === 64 || prefix === 65)) {
     // Discover always has a prefix of 6011, 644-649, or 65, and a length of 16 or 19.
-      if (prefix === 64) {
+      if (prefix === 65) {
         return "Discover";
       } else {
         prefix = parseInt(cardNumber.slice(0, 4));
