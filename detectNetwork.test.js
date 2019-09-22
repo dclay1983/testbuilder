@@ -186,52 +186,56 @@ describe('Discover', function() {
 describe('Maestro', function() {
   // Write full test coverage for the Maestro card
   // Maestro always has a prefix of 5018, 5020, 5038, or 6304, and a length of 12-19.
-    let assert = chai.assert;
-    let prefixes = [5018, 5020, 5038, 6304]
+  let assert = chai.assert;
+  let prefixes = [5018, 5020, 5038, 6304]
 
-    prefixes.forEach( function(prefix) {
-      for (let len = 12; len <= 19; len++) {
+  prefixes.forEach( function(prefix) {
+    for (let len = 12; len <= 19; len++) {
+      let cardNumber = prefix.toString().split("");
+      while (cardNumber.length < len) {
+        cardNumber.push(Math.floor(Math.random("") * 10))
+      }
+      cardNumber = cardNumber.join("")
+      it(`has a prefix of ${prefix} and a length of ${len}`, function() {
+        assert(detectNetwork(cardNumber) === 'Maestro');
+      });
+    }
+  });
+});
+describe('China UnionPay', function() {
+  // China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
+  let assert = chai.assert;
+  let ranges = [{min: 622126, max: 622925}, {min: 624, max: 626}, {min: 6282, max: 6288}]
+  ranges.forEach( function (range) {
+    for (let prefix = range.min; prefix <= range.max; prefix++) {
+      for (let len = 16; len <= 19; len++) {
         let cardNumber = prefix.toString().split("");
         while (cardNumber.length < len) {
           cardNumber.push(Math.floor(Math.random("") * 10))
         }
         cardNumber = cardNumber.join("")
         it(`has a prefix of ${prefix} and a length of ${len}`, function() {
-          assert(detectNetwork(cardNumber) === 'Maestro');
-       })
-     }
-    });
-    describe('China UnionPay', function() {
-      // China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
-      let assert = chai.assert;
-      let ranges = [{min: 622126, max: 622925}, {min: 624, max: 626}, {min: 6282, max: 6288}]
-      ranges.forEach( function (range) {
-        for (let len = 16; len <= 19; len++) {
-          let cardNumber = prefix.toString().split("");
-          while (cardNumber.length < len) {
-            cardNumber.push(Math.floor(Math.random("") * 10))
-          }
-          cardNumber = cardNumber.join("")
-          it(`has a prefix of ${prefix} and a length of ${len}`, function() {
-            assert(detectNetwork(cardNumber) === 'China UnionPay');
-       })
+          assert(detectNetwork(cardNumber) === 'China UnionPay');
+        });
       }
-    })
-    describe('Switch', function() {
-      // Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
-      let assert = chai.assert;
-      let prefixes = [4903, 4905, 4911, 4936, 564182, 633110, 6333, 6759];
-      let lengths = [16, 18, 19];
-      prefixes.forEach( function (prefix) {
-        lengths.forEach( function (len) {
-          let cardNumber = prefix.toString().split("");
-          while (cardNumber.length < len) {
-            cardNumber.push(Math.floor(Math.random("") * 10))
-          }
-          cardNumber = cardNumber.join("")
-          it(`has a prefix of ${prefix} and a length of ${len}`, function() {
-            assert(detectNetwork(cardNumber) === 'Switch');
-        })
-      })
-    })
+    }
+  });
+});
+describe('Switch', function() {
+  // Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
+  let assert = chai.assert;
+  let prefixes = [4903, 4905, 4911, 4936, 564182, 633110, 6333, 6759];
+  let lengths = [16, 18, 19];
+  prefixes.forEach( function (prefix) {
+    lengths.forEach( function (len) {
+      let cardNumber = prefix.toString().split("");
+      while (cardNumber.length < len) {
+        cardNumber.push(Math.floor(Math.random("") * 10))
+      }
+      cardNumber = cardNumber.join("")
+      it(`has a prefix of ${prefix} and a length of ${len}`, function() {
+        assert(detectNetwork(cardNumber) === 'Switch');
+      });
+    });
+  });
 });
