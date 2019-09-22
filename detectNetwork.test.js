@@ -116,23 +116,13 @@ describe('MasterCard', function() {
   it('has a prefix of 53 and a length of 16', function() {
     expect(detectNetwork('5312345678901234')).to.equal('MasterCard');
   });
- 
-
-  // You can also use should instead of expect, which changes the style
-  // slightly. It really doesn't matter which one you use - check out 
-  // http://chaijs.com/guide/styles/ for more info, but it's important
-  // to be consistent (unlike in this file, where we use BOTH expect
-  // and should, but that's just for learning), so once you've gotten 
-  // these tests to pass using should syntax, refactor your tests to 
-  // use either expect or should, but not both. 
-  var should = chai.should();
   
   it('has a prefix of 54 and a length of 16', function() {
-    detectNetwork('5412345678901234').should.equal('MasterCard');
+    expect(detectNetwork('5412345678901234').to.equal('MasterCard');
   });
  
   it('has a prefix of 55 and a length of 16', function() {
-    detectNetwork('5512345678901234').should.equal('MasterCard');
+    expect(detectNetwork('5512345678901234').to.equal('MasterCard');
   })
  
 });
@@ -202,12 +192,12 @@ describe('Maestro', function() {
     prefixes.forEach( function(prefix) {
       for (let len = 12; len <= 19; len++) {
         let cardNumber = prefix.toString().split("");
-        for (let i = cardNumber.length; i < length; i++) {
+        while (cardNumber.length < len) {
           cardNumber.push(Math.floor(Math.random("") * 10))
         }
-        cardNumber = cardNumber.join()
+        cardNumber = cardNumber.join("")
         it(`has a prefix of ${prefix} and a length of ${len}`, function() {
-        assert(detectNetwork('6523456789012294384') === 'Discover');
+          assert(detectNetwork(cardNumber) === 'Maestro');
        })
      }
     });
