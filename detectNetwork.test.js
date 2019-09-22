@@ -140,11 +140,61 @@ describe('MasterCard', function() {
 describe('Discover', function() {
   // Tests without a function will be marked as "pending" and not run
   // Implement these tests (and others) and make them pass!
-  it('has a prefix of 6011 and a length of 16');
-  it('has a prefix of 6011 and a length of 19');
+  // Discover always has a prefix of 6011, 644-649, or 65, and a length of 16 or 19.
+  var assert = chai.assert;
+
+  it('has a prefix of 6011 and a length of 16', function() {
+    assert(detectNetwork('6011456789012294') === 'Discover');
+  });
+  it('has a prefix of 6011 and a length of 19', function() {
+    assert(detectNetwork('6011456789012294384') === 'Discover');
+  });
+  it('has a prefix of 644 and a length of 16', function() {
+    assert(detectNetwork('6443456789012294') === 'Discover');
+  });
+  it('has a prefix of 644 and a length of 19', function() {
+    assert(detectNetwork('6443456789012294384') === 'Discover');
+  });
+  it('has a prefix of 645 and a length of 16', function() {
+    assert(detectNetwork('6453456789012294') === 'Discover');
+  });
+  it('has a prefix of 645 and a length of 19', function() {
+    assert(detectNetwork('6453456789012294384') === 'Discover');
+  });
+  it('has a prefix of 646 and a length of 16', function() {
+    assert(detectNetwork('6463456789012294') === 'Discover');
+  });
+  it('has a prefix of 646 and a length of 19', function() {
+    assert(detectNetwork('6463456789012294384') === 'Discover');
+  });
+  it('has a prefix of 647 and a length of 16', function() {
+    assert(detectNetwork('6473456789012294') === 'Discover');
+  });
+  it('has a prefix of 647 and a length of 19', function() {
+    assert(detectNetwork('6473456789012294384') === 'Discover');
+  });
+  it('has a prefix of 648 and a length of 16', function() {
+    assert(detectNetwork('6483456789012294') === 'Discover');
+  });
+  it('has a prefix of 648 and a length of 19', function() {
+    assert(detectNetwork('6483456789012294384') === 'Discover');
+  });
+  it('has a prefix of 649 and a length of 16', function() {
+    assert(detectNetwork('6493456789012294') === 'Discover');
+  });
+  it('has a prefix of 649 and a length of 19', function() {
+    assert(detectNetwork('6493456789012294384') === 'Discover');
+  });
+  it('has a prefix of 65 and a length of 16', function() {
+    assert(detectNetwork('6523456789012294') === 'Discover');
+  });
+  it('has a prefix of 65 and a length of 19', function() {
+    assert(detectNetwork('6523456789012294384') === 'Discover');
+  });
 });
 
 describe('Maestro', function() {
   // Write full test coverage for the Maestro card
+  // Maestro always has a prefix of 5018, 5020, 5038, or 6304, and a length of 12-19.
 });
 
