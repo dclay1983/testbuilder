@@ -32,7 +32,7 @@ var detectNetwork = function(cardNumber) {
         return "Discover";
       } else {
         prefix = parseInt(cardNumber.slice(0, 4));
-        if (prefix === 6011 || (prefix >= 6440 && prefix <= 6490)) {
+        if (prefix === 6011 || (prefix >= 6440 && prefix <= 6499)) {
           return "Discover";
         }
       }
