@@ -6,65 +6,95 @@
 // There are two indicators:
 //   1. The first few numbers (called the prefix)
 //   2. The number of digits in the number (called the length)
+var networkCards = [
+  // The Diner's Club network always starts with a 38 or 39 and is 14 
+  // digits long
+  {name: "Diner's Club", lengths: [14], prefixes: [38, 39]},
 
+  // The American Express network always starts with a 34 or 37 and is 15 
+  // digits long
+  {name: "American Express", lengths: [15], prefixes: [34, 37]},
+
+  // The MasterCard network always starts with 51-55 and is 16, digits long
+  {name: "MasterCard", lengths: [16], prefixRanges: [{min: 51, max: 55}]},
+
+  // Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110,
+  // 6333, or 6759 and a length of 16, 18, or 19.
+  {name: "Switch", lengths: [16, 18, 19], 
+    prefixes: [4903, 4905, 4911, 4936, 6333, 6759, 564182, 633110]},
+
+  // The Visa network always starts with 4 and is 13, 16, or 19 digits long
+  {name: "Visa", lengths: [13, 16, 19], prefixRanges: [{min: 40, max: 49}]},
+
+  // Discover always has a prefix of 6011, 644-649, or 65,
+  // and a length of 16 or 19.
+  {name: "Discover", lengths: [16, 19], prefixes: [6011, 65], 
+    prefixRanges: [{min: 644, max: 649}]},
+
+  // Maestro always has a prefix of 5018, 5020, 5038, or 6304, and a length of
+  // 12-19.
+  {name: "Maestro", lengths: [12, 13, 14, 15, 16, 17, 18, 19],
+    prefixes: [5018, 5020, 5038, 6304]},
+
+  // China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288
+  // and a length of 16-19.
+  {name: "China UnionPay", lengths: [16, 17, 18, 19],
+    prefixRanges: [{min: 622126, max: 622925}, {min: 624, max: 626}, {min: 6282, max: 6288}]}
+]
+
+var checkLength = function(cardLength, lengths) {
+  for (let i = 0; i < lengths.length; i++) {
+    if (cardLength === lengths[i]) {return true;}
+  }
+  return false;
+};
+
+var checkPrefix = function(cardNumber, prefixes, maxPrefixLength) {
+  for (let i = 0; i < prefixes.length; i++) {
+    let len = prefixes[i].toString().length;
+    if (len > maxPrefixLength) {
+      if (parseInt(cardNumber.slice(0, len)) === prefixes[i]) {
+        return len;
+      }
+    }
+  }
+  return false;
+}
+
+var checkPrefixRanges = function(cardNumber, prefixRanges, maxPrefixLength) {
+  for (let i = 0; i < prefixRanges.length; i++) {
+    let len = prefixRanges[i].min.toString().length;
+    if (len > maxPrefixLength) {
+      if (parseInt(cardNumber.slice(0, len)) >= prefixRanges[i].min &&
+        parseInt(cardNumber.slice(0, len)) <= prefixRanges[i].max) {
+        return len;
+      }
+    }
+  }
+  return false;
+}
 
 var detectNetwork = function(cardNumber) {
   // Note: `cardNumber` will always be a string
-  let len = cardNumber.length;
-  let prefix = parseInt(cardNumber.slice(0, 2))
-  
-  if (len === 14 && (prefix === 38 || prefix === 39)) {
-    // The Diner's Club network always starts with a 38 or 39 and is 14 digits long
-    return "Diner's Club";
-  } else if (len === 15 && (prefix === 34 || prefix === 37)) {
-    // The American Express network always starts with a 34 or 37 and is 15 digits long
-    return "American Express";
-  } else if (len === 16 && (prefix >= 51 && prefix <= 55)) {
-    // The MasterCard network always starts with 51-55 and is 16, digits long
-    return "MasterCard";
-  } else if ((len ===16 || len === 18 || len === 19) &&
-      (parseInt(cardNumber.slice(0, 4)) === 4903 ||
-      parseInt(cardNumber.slice(0, 4)) === 4905 ||
-      parseInt(cardNumber.slice(0, 4)) === 4911 ||
-      parseInt(cardNumber.slice(0, 4)) === 4936 ||
-      parseInt(cardNumber.slice(0, 4)) === 6333 ||
-      parseInt(cardNumber.slice(0, 4)) === 6759 ||
-      parseInt(cardNumber.slice(0, 6)) === 564182 ||
-      parseInt(cardNumber.slice(0, 6)) === 633110)) {
-    // Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
-    return "Switch";
-  } else if ((len === 13 || len === 16 || len === 19) && (prefix >= 40 && prefix <= 49)) {
-    // The Visa network always starts with 4 and is 13, 16, or 19 digits long
-    return "Visa";
-  } else if ((len === 16 || len === 19) && (prefix === 60 || prefix === 64 || prefix === 65)){
-    // Discover always has a prefix of 6011, 644-649, or 65, and a length of 16 or 19.
-    if (prefix === 65) {
-      return "Discover";
-    } else {
-      prefix = parseInt(cardNumber.slice(0, 4));
-      if (prefix === 6011 || (prefix >= 6440 && prefix <= 6499)) {
-        return "Discover";
+  let cardLength = cardNumber.length;
+  let matchedCard = {name: undefined, prefixLength: 0}
+
+  networkCards.forEach(function (networkCard) {
+    if (checkLength(cardLength, networkCard.lengths)) {
+      let testPrefix = networkCard.prefixes ? checkPrefix(cardNumber, networkCard.prefixes,
+        matchedCard.prefixLength) : false;
+      if (testPrefix) {
+        matchedCard.name = networkCard.name;
+        matchedCard.prefixLength = testPrefix;
+      } else {
+        testPrefix = networkCard.prefixRanges ? checkPrefixRanges(cardNumber, networkCard.prefixRanges,
+          matchedCard.prefixLength) : false;
+        if (testPrefix) {
+          matchedCard.name = networkCard.name;
+          matchedCard.prefixLength = testPrefix;
+        }
       }
     }
-  } else if ((len >= 12 && len <= 19) && (prefix == 50 || prefix == 63)) {
-    // Maestro always has a prefix of 5018, 5020, 5038, or 6304, and a length of 12-19.
-    prefix = parseInt(cardNumber.slice(0, 4));
-    if (prefix === 5018 || prefix === 5020 || prefix === 5038 || prefix === 6304) {
-        return "Maestro";
-    }
-  } else if ((len >= 16 && len <= 19) && prefix === 62) {
-    // China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
-    prefix = parseInt(cardNumber.slice(0, 3));
-    if (prefix >= 624 && prefix <= 626) { 
-      return "China UnionPay"
-    }
-    prefix = parseInt(cardNumber.slice(0, 4));
-    if (prefix >= 6282 && prefix <= 6288) { 
-      return "China UnionPay"
-    }
-    prefix = parseInt(cardNumber.slice(0, 6));
-    if (prefix >= 622126 && prefix <= 622925) {
-      return "China UnionPay"
-    }
-  }
+  })
+  return matchedCard.name;
 };
